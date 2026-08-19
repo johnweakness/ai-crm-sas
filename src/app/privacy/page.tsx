@@ -1,0 +1,5 @@
+import Link from "next/link";
+
+export default function PrivacyPage() {
+  return <main className="public-page"><div className="public-nav"><Link href="/" className="public-brand">orbit<span>.</span></Link><Link href="/">Back to app</Link></div><article className="public-copy"><p className="eyebrow">Legal</p><h1>Privacy policy</h1><p className="lead-copy">Orbit helps small teams manage relationships. This policy explains the data we collect and how we use it.</p><h2>What we collect</h2><p>We collect account details, workspace information, lead records, tasks, and activity required to provide the CRM. We do not sell customer data.</p><h2>How we use data</h2><p>We use data to authenticate users, keep workspaces isolated, provide analytics, and deliver requested integrations. AI requests are sent only when a workspace member chooses to generate content.</p><h2>Your choices</h2><p>Workspace administrators can update or delete records. Contact your workspace administrator for access, correction, or deletion requests.</p><h2>Contact</h2><p>For privacy questions, email the workspace administrator listed in your Orbit account.</p></article></main>;
+}

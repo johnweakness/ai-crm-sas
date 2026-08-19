@@ -53,6 +53,17 @@ create table public.activity_log (
   created_at timestamptz not null default now()
 );
 
+create table public.workspace_invitations (
+  id uuid primary key default uuid_generate_v4(),
+  workspace_id uuid not null references public.workspaces on delete cascade,
+  invited_by uuid not null references auth.users on delete cascade,
+  email text not null,
+  role public.member_role not null default 'employee',
+  expires_at timestamptz not null default (now() + interval '7 days'),
+  accepted_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
 create or replace function public.is_workspace_member(target_workspace uuid)
 returns boolean language sql security definer set search_path = public as $$
   select exists (select 1 from public.profiles where id = auth.uid() and workspace_id = target_workspace);
@@ -63,12 +74,14 @@ alter table public.profiles enable row level security;
 alter table public.leads enable row level security;
 alter table public.tasks enable row level security;
 alter table public.activity_log enable row level security;
+alter table public.workspace_invitations enable row level security;
 
 create policy "members can view their workspace" on public.workspaces for select using (id in (select workspace_id from public.profiles where id = auth.uid()));
 create policy "members can view profiles" on public.profiles for select using (workspace_id in (select workspace_id from public.profiles where id = auth.uid()));
 create policy "members manage leads" on public.leads for all using (public.is_workspace_member(workspace_id)) with check (public.is_workspace_member(workspace_id));
 create policy "members manage tasks" on public.tasks for all using (public.is_workspace_member(workspace_id)) with check (public.is_workspace_member(workspace_id));
 create policy "members view activity" on public.activity_log for select using (public.is_workspace_member(workspace_id));
+create policy "admins manage invitations" on public.workspace_invitations for all using (exists (select 1 from public.profiles where id = auth.uid() and workspace_id = workspace_invitations.workspace_id and role = 'admin')) with check (exists (select 1 from public.profiles where id = auth.uid() and workspace_id = workspace_invitations.workspace_id and role = 'admin'));
 
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path = public as $$
 declare new_workspace uuid;

@@ -1,0 +1,5 @@
+import Link from "next/link";
+
+export default function TermsPage() {
+  return <main className="public-page"><div className="public-nav"><Link href="/" className="public-brand">orbit<span>.</span></Link><Link href="/">Back to app</Link></div><article className="public-copy"><p className="eyebrow">Legal</p><h1>Terms of service</h1><p className="lead-copy">By using Orbit, you agree to use the service responsibly and keep your account credentials secure.</p><h2>Accounts</h2><p>You are responsible for the accuracy of information in your workspace and for activity performed through your account. Workspace administrators manage membership and permissions.</p><h2>Acceptable use</h2><p>Do not use Orbit to store unlawful content, abuse third-party integrations, send unsolicited messages, or attempt to access another workspace.</p><h2>AI features</h2><p>AI-generated summaries and messages are suggestions. Review them before sending and do not rely on them as professional, legal, or financial advice.</p><h2>Availability</h2><p>We work to keep Orbit reliable, but integrations and third-party services may occasionally be unavailable.</p></article></main>;
+}
