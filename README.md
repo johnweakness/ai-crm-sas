@@ -20,9 +20,9 @@ If signup reports `Database error saving new user`, run [`supabase/fix-auth-trig
 
 API routes: `GET|POST|PATCH|DELETE /api/leads`, `GET|POST|PATCH /api/tasks`, `GET /api/notifications`, `POST /api/ai/follow-up`, `GET /api/integrations/google?provider=gmail|calendar`, `GET /api/health`, and `GET /auth/callback`.
 
-For Vercel, add the same environment variables and register both the local and deployed `/auth/callback` URLs in Supabase Authentication settings.
+For Vercel, add the same environment variables and register both the local and deployed `/auth/callback` URLs in Supabase Authentication settings. Google OAuth also needs two exact authorized redirect URIs: `http://localhost:3000/api/integrations/google/callback` for local development and `https://your-project.vercel.app/api/integrations/google/callback` for production. Set `GOOGLE_REDIRECT_URI` to the matching value in each environment.
 
-Never commit `.env.local`. Rotate any provider credential that has been exposed before publishing the repository.
+Never commit `.env.local`. Rotate the Google OAuth secret and Gemini API key because credentials were previously placed in the tracked environment template.
 
 ## Getting Started
 
