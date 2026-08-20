@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -11,8 +10,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const leadName = body.leadName || "the lead";
   const direction = body.direction || "Write a warm, concise follow-up that moves the conversation forward.";
-  if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "AI provider is not configured" }, { status: 503 });
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const completion = await client.chat.completions.create({ model: "gpt-4o-mini", temperature: 0.7, messages: [{ role: "system", content: "You write concise, thoughtful sales follow-up emails for a small marketing agency. Return only the message body." }, { role: "user", content: `Lead: ${leadName}\nDirection: ${direction}` }] });
-  return NextResponse.json({ message: completion.choices[0]?.message.content || "Unable to generate a message." });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "Gemini AI is not configured" }, { status: 503 });
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ systemInstruction: { parts: [{ text: "You write concise, thoughtful sales follow-up emails for a small marketing agency. Return only the message body." }] }, contents: [{ role: "user", parts: [{ text: `Lead: ${leadName}\nDirection: ${direction}` }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 300 } }) });
+  if (!response.ok) return NextResponse.json({ error: "Gemini request failed" }, { status: 502 });
+  const result = await response.json();
+  const message = result.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!message) return NextResponse.json({ error: "Gemini returned no message" }, { status: 502 });
+  return NextResponse.json({ message });
 }
