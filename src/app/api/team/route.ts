@@ -12,7 +12,7 @@ async function adminContext() {
 
 export async function GET() {
   const { supabase, user, workspaceId } = await adminContext();
-  if (!supabase) return NextResponse.json({ members: [], demo: true });
+  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 });
   if (!user || !workspaceId) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   const { data, error } = await supabase.from("profiles").select("id, full_name, role, created_at").eq("workspace_id", workspaceId).order("created_at");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

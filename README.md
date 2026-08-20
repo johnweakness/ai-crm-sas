@@ -10,7 +10,7 @@ copy .env.example .env.local
 npm run dev
 ```
 
-Run [`supabase/schema.sql`](supabase/schema.sql) in Supabase SQL Editor, then add the values from [`.env.example`](.env.example). Set `NEXT_PUBLIC_SITE_URL` to your Vercel URL so email confirmation links do not point to localhost. Add `OPENAI_API_KEY` for live AI messages and Google OAuth credentials for Gmail sending and Calendar event creation. Without Supabase variables, the UI explicitly runs in demo mode.
+Run [`supabase/schema.sql`](supabase/schema.sql) in Supabase SQL Editor, then add the values from [`.env.example`](.env.example). Set `NEXT_PUBLIC_SITE_URL` to your Vercel URL so email confirmation links do not point to localhost. Add `OPENAI_API_KEY` for live AI messages and Google OAuth credentials for Gmail sending and Calendar event creation. Production configuration is required; missing services return explicit errors.
 
 For confirmation emails, in Supabase go to **Authentication > URL Configuration**, set the Site URL to `http://localhost:3000`, and add `http://localhost:3000/auth/callback` under Redirect URLs. Supabase's built-in email provider must be enabled under **Authentication > Providers > Email**. The app now sends this callback URL explicitly during signup.
 

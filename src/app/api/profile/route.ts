@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
   const supabase = await createClient();
-  if (!supabase) return NextResponse.json({ profile: null, demo: true });
+  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { data, error } = await supabase.from("profiles").select("id, workspace_id, full_name, role, created_at").eq("id", user.id).single();

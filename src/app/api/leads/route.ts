@@ -12,7 +12,7 @@ async function context() {
 
 export async function GET() {
   const { supabase, user, workspaceId } = await context();
-  if (!supabase) return NextResponse.json({ leads: [], demo: true });
+  if (!supabase) return NextResponse.json({ error: "Supabase is not configured" }, { status: 503 });
   if (!user || !workspaceId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { data, error } = await supabase.from("leads").select("*").eq("workspace_id", workspaceId).order("created_at", { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
